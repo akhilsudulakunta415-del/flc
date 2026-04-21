@@ -1,0 +1,77 @@
+@startuml FLC_ClassDiagram
+skinparam classAttributeIconSize 0
+
+class FLCApp {
+  +main(args: String[])
+  -runMainMenu(centre: Centre, in: Scanner)
+  -bookLesson(...)
+  -changeOrCancel(...)
+  -attendLesson(...)
+}
+
+class Centre {
+  -timetable: List<Lesson>
+  -members: List<Member>
+  -allBookings: List<Booking>
+  -priceByExercise: Map<String, Double>
+  +findMemberById(id: String): Member
+  +findLessonById(id: int): Lesson
+  +getLessonsByDay(day: String): List<Lesson>
+  +getLessonsByExercise(name: String): List<Lesson>
+  +getLessonsInMonth(month: int): List<Lesson>
+  +addBooking(member, lesson): Booking
+  +changeBooking(booking, newLesson): Booking
+  +cancelBooking(booking): boolean
+  +attendLesson(booking, rating, review)
+  +printMonthlyLessonReport(month: int)
+  +printMonthlyChampionReport(month: int)
+}
+
+class Lesson {
+  -id: int
+  -exerciseName: String
+  -day: String
+  -time: String
+  -date: LocalDate
+  -capacity: int
+  -price: double
+  -bookings: List<Booking>
+  +addBooking(b: Booking): boolean
+  +removeBooking(b: Booking): boolean
+  +getAverageRating(): double
+  +getAttendedCount(): long
+}
+
+class Booking {
+  -id: int
+  -member: Member
+  -lesson: Lesson
+  -status: String
+  -rating: Rating
+  +setLesson(lesson: Lesson)
+  +setStatus(status: String)
+}
+
+class Member {
+  -memberId: String
+  -name: String
+  -registered: boolean
+}
+
+class Rating {
+  -value: int
+  -review: String
+  +setValue(v: int)
+  +setReview(text: String)
+}
+
+FLCApp ..> Centre : uses
+Centre "1" *-- "many" Lesson : timetable
+Centre "1" *-- "many" Member : members
+Centre "1" o-- "many" Booking : tracks
+Lesson "1" *-- "many" Booking : bookings
+Booking --> Member
+Booking --> Lesson
+Booking *-- Rating
+
+@enduml
